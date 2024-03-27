@@ -11,6 +11,10 @@ This is a GitOps repository of a simple Kargo example for getting started.
 
 This example does not require an Argo CD instance and so would work with any GitOps operator (Argo CD, Flux) that detects and deploys manifest changes from a path in a git repo automatically (e.g. using auto-sync).
 
+## Requirements
+
+* Kargo v0.5 (for older Kargo versions, switch to the release-X.Y branch)
+* GitHub git and container repository
 
 ## Instructions
 
@@ -59,10 +63,11 @@ kargo login https://<kargo-url> --admin
 8. Add git repository credentials to Kargo.
 
 ```
-$ ./add-credential.sh
-Configuring credentials for https://github.com/akuity/kargo-simple.git
-Username: yourgithubusername
-Password: <github PAT>
+kargo create credentials github-creds \
+    --project kargo-simple \
+    --git \
+    --username <yourgithubusername> \
+    --repo-url https://github.com/<yourgithubusername>/kargo-simple.git
 ```
 
 As part of the promotion process, Kargo requires privileges to commit changes to your git repository, as well as the ability to create pull requests. Ensure that the given token has these privileges.
@@ -74,7 +79,7 @@ As part of the promotion process, Kargo requires privileges to commit changes to
 kargo apply -f ./kargo
 ```
 
-10. Promtote the image!
+10. Promote the image!
 
 You now have a Kargo Pipeline which promotes images from the guestbook container image repository, through a three-stage deploy pipeline. Visit the `kargo-simple` Project in the Kargo UI to see the deploy pipeline.
 
