@@ -16,6 +16,10 @@ spec:
         images:
         - image: ghcr.io/akuity/guestbook
           path: env/dev
+    # If you have an Argo CD application that should be synced after the git repo is updated,
+    # uncomment the following lines and specify the app name. Repeat for the other Stages.
+    # argoCDAppUpdates:
+    # - appName: guestbook-dev
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -37,6 +41,8 @@ spec:
         images:
         - image: ghcr.io/akuity/guestbook
           path: env/staging
+    # argoCDAppUpdates:
+    # - appName: guestbook-staging
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -59,3 +65,5 @@ spec:
         - image: ghcr.io/akuity/guestbook
           path: env/prod
       pullRequest: {}
+    # argoCDAppUpdates:
+    # - appName: guestbook-prod

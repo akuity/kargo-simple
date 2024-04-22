@@ -33,6 +33,8 @@ git push
 The easiest way to create a new ghcr.io image repository, is by retagging/pushing an existing image with your github username:
 
 ```
+docker login ghcr.io
+
 docker buildx imagetools create \
     ghcr.io/akuity/guestbook:latest \
     -t ghcr.io/<yourgithubusername>/guestbook:v0.0.1
@@ -57,10 +59,16 @@ In the GitHub UI, navigate to the "guestbook" container repository, Package sett
 7. Login to kargo
 
 ```
-kargo login https://<kargo-url> --admin
+kargo login --admin https://<kargo-url>
 ```
 
-8. Add git repository credentials to Kargo.
+8. Apply the Kargo manifests
+
+```
+kargo apply -f ./kargo
+```
+
+9. Add git repository credentials to Kargo. This can also be done in the UI in the `kargo-simple` Project.
 
 ```
 kargo create credentials github-creds \
@@ -71,13 +79,6 @@ kargo create credentials github-creds \
 ```
 
 As part of the promotion process, Kargo requires privileges to commit changes to your git repository, as well as the ability to create pull requests. Ensure that the given token has these privileges.
-
-
-9. Apply the Kargo manifests
-
-```
-kargo apply -f ./kargo
-```
 
 10. Promote the image!
 
