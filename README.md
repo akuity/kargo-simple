@@ -13,7 +13,7 @@ This example does not require an Argo CD instance and so would work with any Git
 
 ## Requirements
 
-* Kargo v0.5 (for older Kargo versions, switch to the release-X.Y branch)
+* Kargo v0.8 (for older Kargo versions, switch to the release-X.Y branch)
 * GitHub git and container repository
 
 ## Instructions
