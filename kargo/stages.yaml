@@ -42,7 +42,6 @@ spec:
       - uses: git-push
         config:
           path: ./repository
-          targetBranch: main
       # If you have an Argo CD Application that should be synced after the Git
       # repository is updated, uncomment the following lines and specify the
       # app name.
@@ -100,7 +99,6 @@ spec:
       - uses: git-push
         config:
           path: ./repository
-          targetBranch: main
       # If you have an Argo CD Application that should be synced after the Git
       # repository is updated, uncomment the following lines and specify the
       # app name.
