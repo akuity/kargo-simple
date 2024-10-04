@@ -16,32 +16,32 @@ spec:
     spec:
       steps:
       # Clone the Git repository that contains the Kustomize configuration
-      # to the ./repository directory.
+      # to the ./src directory.
       - uses: git-clone
         config:
           repoURL: https://github.com/akuity/kargo-simple.git
           checkout:
-          - branch: main
-            path: ./repository
+          - fromFreight: true
+            path: ./src
       # Update the image in the Kustomize configuration located at ./env/dev
       # in the repository.
       - uses: kustomize-set-image
         as: update-image
         config:
-          path: ./repository/env/dev
+          path: ./src/env/dev
           images:
           - image: ghcr.io/akuity/guestbook
       # Commit the changes to the Git repository.
       - uses: git-commit
         as: commit
         config:
-          path: ./repository
+          path: ./src
           messageFromSteps:
           - update-image
       # Push the changes to the Git repository.
       - uses: git-push
         config:
-          path: ./repository
+          path: ./src
       # If you have an Argo CD Application that should be synced after the Git
       # repository is updated, uncomment the following lines and specify the
       # app name.
@@ -68,37 +68,37 @@ spec:
     sources:
       direct: false
       stages:
-        - dev
+      - dev
   promotionTemplate:
     spec:
       steps:
       # Clone the Git repository that contains the Kustomize configuration
-      # to the ./repository directory.
+      # to the ./src directory.
       - uses: git-clone
         config:
           repoURL: https://github.com/akuity/kargo-simple.git
           checkout:
-          - branch: main
-            path: ./repository
+          - fromFreight: true
+            path: ./src
       # Update the image in the Kustomize configuration located at ./env/staging
       # in the repository.
       - uses: kustomize-set-image
         as: update-image
         config:
-          path: ./repository/env/staging
+          path: ./src/env/staging
           images:
           - image: ghcr.io/akuity/guestbook
       # Commit the changes to the Git repository.
       - uses: git-commit
         as: commit
         config:
-          path: ./repository
+          path: ./src
           messageFromSteps:
           - update-image
       # Push the changes to the Git repository.
       - uses: git-push
         config:
-          path: ./repository
+          path: ./src
       # If you have an Argo CD Application that should be synced after the Git
       # repository is updated, uncomment the following lines and specify the
       # app name.
@@ -125,38 +125,38 @@ spec:
     sources:
       direct: false
       stages:
-        - staging
+      - staging
   promotionTemplate:
     spec:
       steps:
       # Clone the Git repository that contains the Kustomize configuration
-      # to the ./repository directory.
+      # to the ./src directory.
       - uses: git-clone
         config:
           repoURL: https://github.com/akuity/kargo-simple.git
           checkout:
-            - branch: main
-              path: ./repository
+          - fromFreight: true
+            path: ./src
       # Update the image in the Kustomize configuration located at ./env/prod
       # in the repository.
       - uses: kustomize-set-image
         as: update-image
         config:
-          path: ./repository/env/prod
+          path: ./src/env/prod
           images:
           - image: ghcr.io/akuity/guestbook
       # Commit the changes to the Git repository.
       - uses: git-commit
         as: commit
         config:
-          path: ./repository
+          path: ./src
           messageFromSteps:
           - update-image
       # Push the changes to a newly created branch in the Git repository.
       - uses: git-push
         as: push
         config:
-          path: ./repository
+          path: ./src
           generateTargetBranch: true
       # Open a pull request to merge the changes into the main branch.
       - uses: git-open-pr
