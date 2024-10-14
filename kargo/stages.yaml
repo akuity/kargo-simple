@@ -21,7 +21,7 @@ spec:
         config:
           repoURL: https://github.com/akuity/kargo-simple.git
           checkout:
-          - fromFreight: true
+          - branch: main
             path: ./src
       # Update the image in the Kustomize configuration located at ./env/dev
       # in the repository.
@@ -78,7 +78,7 @@ spec:
         config:
           repoURL: https://github.com/akuity/kargo-simple.git
           checkout:
-          - fromFreight: true
+          - branch: main
             path: ./src
       # Update the image in the Kustomize configuration located at ./env/staging
       # in the repository.
@@ -135,7 +135,7 @@ spec:
         config:
           repoURL: https://github.com/akuity/kargo-simple.git
           checkout:
-          - fromFreight: true
+          - branch: main
             path: ./src
       # Update the image in the Kustomize configuration located at ./env/prod
       # in the repository.
