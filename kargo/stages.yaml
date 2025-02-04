@@ -14,6 +14,13 @@ spec:
       direct: true
   promotionTemplate:
     spec:
+      vars:
+      - name: repoURL
+        value: https://github.com/akuity/kargo-simple.git
+      - name: branch
+        value: main
+      - name: image
+        value: ghcr.io/akuity/guestbook
       steps:
       # Clone the Git repository that contains the Kustomize configuration
       # to the ./src directory.
@@ -21,14 +28,14 @@ spec:
         config:
           repoURL: https://github.com/akuity/kargo-simple.git
           checkout:
-          - branch: main
+          - branch: ${{ vars.branch }}
             path: ./src
       # Update the image in the Kustomize configuration located at ./env/dev
       # in the repository.
       - uses: kustomize-set-image
         as: update-image
         config:
-          path: ./src/env/dev
+          path: ./src/env/${{ ctx.stage }}
           images:
           - image: ghcr.io/akuity/guestbook
       # Commit the changes to the Git repository.
@@ -36,8 +43,10 @@ spec:
         as: commit
         config:
           path: ./src
-          messageFromSteps:
-          - update-image
+          message: |
+            Update guestbook image in ${{ ctx.stage }} environment
+
+            ${{ outputs['update-image'].commitMessage }}
       # Push the changes to the Git repository.
       - uses: git-push
         config:
@@ -51,7 +60,7 @@ spec:
       #     - name: guestbook-dev
       #       sources:
       #       - repoURL: https://github.com/akuity/kargo-simple.git
-      #         desiredCommitFromStep: commit
+      #         desiredRevision: ${{ outputs['commit'].commit }}
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
@@ -71,30 +80,39 @@ spec:
       - dev
   promotionTemplate:
     spec:
+      vars:
+      - name: repoURL
+        value: https://github.com/akuity/kargo-simple.git
+      - name: branch
+        value: main
+      - name: image
+        value: ghcr.io/akuity/guestbook
       steps:
       # Clone the Git repository that contains the Kustomize configuration
       # to the ./src directory.
       - uses: git-clone
         config:
-          repoURL: https://github.com/akuity/kargo-simple.git
+          repoURL: ${{ vars.repoURL }}
           checkout:
-          - branch: main
+          - branch: ${{ vars.branch }}
             path: ./src
       # Update the image in the Kustomize configuration located at ./env/staging
       # in the repository.
       - uses: kustomize-set-image
         as: update-image
         config:
-          path: ./src/env/staging
+          path: ./src/env/${{ ctx.stage }}
           images:
-          - image: ghcr.io/akuity/guestbook
+          - image: ${{ vars.image }}
       # Commit the changes to the Git repository.
       - uses: git-commit
         as: commit
         config:
           path: ./src
-          messageFromSteps:
-          - update-image
+          message: |
+            Update guestbook image in ${{ ctx.stage }} environment
+
+            ${{ outputs['update-image'].commitMessage }}
       # Push the changes to the Git repository.
       - uses: git-push
         config:
@@ -107,8 +125,8 @@ spec:
       #     apps:
       #       - name: guestbook-staging
       #         sources:
-      #         - repoURL: https://github.com/akuity/kargo-simple.git
-      #           desiredCommitFromStep: commit
+      #         - repoURL: ${{ vars.repoURL }}
+      #           desiredRevision: ${{ outputs['commit'].commit }}
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
@@ -128,14 +146,21 @@ spec:
       - staging
   promotionTemplate:
     spec:
+      vars:
+      - name: repoURL
+        value: https://github.com/akuity/kargo-simple.git
+      - name: branch
+        value: main
+      - name: image
+        value: ghcr.io/akuity/guestbook
       steps:
       # Clone the Git repository that contains the Kustomize configuration
       # to the ./src directory.
       - uses: git-clone
         config:
-          repoURL: https://github.com/akuity/kargo-simple.git
+          repoURL: ${{ vars.repoURL }}
           checkout:
-          - branch: main
+          - branch: ${{ vars.branch }}
             path: ./src
       # Update the image in the Kustomize configuration located at ./env/prod
       # in the repository.
@@ -144,14 +169,16 @@ spec:
         config:
           path: ./src/env/prod
           images:
-          - image: ghcr.io/akuity/guestbook
+          - image: ${{ vars.image }}
       # Commit the changes to the Git repository.
       - uses: git-commit
         as: commit
         config:
           path: ./src
-          messageFromSteps:
-          - update-image
+          message: |
+            Update guestbook image in ${{ ctx.stage }} environment
+
+            ${{ outputs['update-image'].commitMessage }}
       # Push the changes to a newly created branch in the Git repository.
       - uses: git-push
         as: push
@@ -162,15 +189,15 @@ spec:
       - uses: git-open-pr
         as: open-pr
         config:
-          repoURL: https://github.com/akuity/kargo-simple.git
-          sourceBranchFromStep: push
-          targetBranch: main
+          repoURL: ${{ vars.repoURL }}
+          sourceBranch: ${{ outputs['push'].branch }}
+          targetBranch: ${{ vars.branch }}
       # Wait for the pull request to be merged.
       - uses: git-wait-for-pr
         as: wait-for-pr
         config:
-          repoURL: https://github.com/akuity/kargo-simple.git
-          prNumberFromStep: open-pr
+          repoURL: ${{ vars.repoURL }}
+          prNumber: ${{ outputs['open-pr'].prNumber }}
       # If you have an Argo CD Application that should be synced after the Git
       # repository is updated, uncomment the following lines and specify the
       # app name.
@@ -179,5 +206,5 @@ spec:
       #     apps:
       #     - name: guestbook-prod
       #       sources:
-      #       - repoURL: https://github.com/akuity/kargo-simple.git
-      #         desiredCommitFromStep: commit
+      #       - repoURL: ${{ vars.repoURL }}
+      #         desiredRevision: ${{ outputs['wait-for-pr'].commit }}
