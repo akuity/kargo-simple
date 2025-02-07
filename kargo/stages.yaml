@@ -15,43 +15,9 @@ spec:
   promotionTemplate:
     spec:
       steps:
-      # Clone the Git repository that contains the Kustomize configuration
-      # to the ./src directory.
-      - uses: git-clone
-        config:
-          repoURL: https://github.com/akuity/kargo-simple.git
-          checkout:
-          - branch: main
-            path: ./src
-      # Update the image in the Kustomize configuration located at ./env/dev
-      # in the repository.
-      - uses: kustomize-set-image
-        as: update-image
-        config:
-          path: ./src/env/dev
-          images:
-          - image: ghcr.io/akuity/guestbook
-      # Commit the changes to the Git repository.
-      - uses: git-commit
-        as: commit
-        config:
-          path: ./src
-          messageFromSteps:
-          - update-image
-      # Push the changes to the Git repository.
-      - uses: git-push
-        config:
-          path: ./src
-      # If you have an Argo CD Application that should be synced after the Git
-      # repository is updated, uncomment the following lines and specify the
-      # app name.
-      # - uses: argocd-update
-      #   config:
-      #     apps:
-      #     - name: guestbook-dev
-      #       sources:
-      #       - repoURL: https://github.com/akuity/kargo-simple.git
-      #         desiredCommitFromStep: commit
+      - task:
+          name: promote
+
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
@@ -66,49 +32,14 @@ spec:
       kind: Warehouse
       name: guestbook
     sources:
-      direct: false
       stages:
       - dev
   promotionTemplate:
     spec:
       steps:
-      # Clone the Git repository that contains the Kustomize configuration
-      # to the ./src directory.
-      - uses: git-clone
-        config:
-          repoURL: https://github.com/akuity/kargo-simple.git
-          checkout:
-          - branch: main
-            path: ./src
-      # Update the image in the Kustomize configuration located at ./env/staging
-      # in the repository.
-      - uses: kustomize-set-image
-        as: update-image
-        config:
-          path: ./src/env/staging
-          images:
-          - image: ghcr.io/akuity/guestbook
-      # Commit the changes to the Git repository.
-      - uses: git-commit
-        as: commit
-        config:
-          path: ./src
-          messageFromSteps:
-          - update-image
-      # Push the changes to the Git repository.
-      - uses: git-push
-        config:
-          path: ./src
-      # If you have an Argo CD Application that should be synced after the Git
-      # repository is updated, uncomment the following lines and specify the
-      # app name.
-      # - uses: argocd-update
-      #   config:
-      #     apps:
-      #       - name: guestbook-staging
-      #         sources:
-      #         - repoURL: https://github.com/akuity/kargo-simple.git
-      #           desiredCommitFromStep: commit
+      - task:
+          name: promote
+
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
@@ -123,61 +54,10 @@ spec:
       kind: Warehouse
       name: guestbook
     sources:
-      direct: false
       stages:
       - staging
   promotionTemplate:
     spec:
       steps:
-      # Clone the Git repository that contains the Kustomize configuration
-      # to the ./src directory.
-      - uses: git-clone
-        config:
-          repoURL: https://github.com/akuity/kargo-simple.git
-          checkout:
-          - branch: main
-            path: ./src
-      # Update the image in the Kustomize configuration located at ./env/prod
-      # in the repository.
-      - uses: kustomize-set-image
-        as: update-image
-        config:
-          path: ./src/env/prod
-          images:
-          - image: ghcr.io/akuity/guestbook
-      # Commit the changes to the Git repository.
-      - uses: git-commit
-        as: commit
-        config:
-          path: ./src
-          messageFromSteps:
-          - update-image
-      # Push the changes to a newly created branch in the Git repository.
-      - uses: git-push
-        as: push
-        config:
-          path: ./src
-          generateTargetBranch: true
-      # Open a pull request to merge the changes into the main branch.
-      - uses: git-open-pr
-        as: open-pr
-        config:
-          repoURL: https://github.com/akuity/kargo-simple.git
-          sourceBranchFromStep: push
-          targetBranch: main
-      # Wait for the pull request to be merged.
-      - uses: git-wait-for-pr
-        as: wait-for-pr
-        config:
-          repoURL: https://github.com/akuity/kargo-simple.git
-          prNumberFromStep: open-pr
-      # If you have an Argo CD Application that should be synced after the Git
-      # repository is updated, uncomment the following lines and specify the
-      # app name.
-      # - uses: argocd-update
-      #   config:
-      #     apps:
-      #     - name: guestbook-prod
-      #       sources:
-      #       - repoURL: https://github.com/akuity/kargo-simple.git
-      #         desiredCommitFromStep: commit
+      - task:
+          name: promote-with-pr

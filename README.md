@@ -16,7 +16,7 @@ a path in a Git repository automatically (e.g. using auto-sync).
 
 ## Requirements
 
-* Kargo v0.9.x (for older Kargo versions, switch to the release-X.Y branch)
+* Kargo v1.2.x (for older Kargo versions, switch to the release-X.Y branch)
 * GitHub and a container registry (GHCR.io)
 * `git` and `docker` installed
 
