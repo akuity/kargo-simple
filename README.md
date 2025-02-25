@@ -7,6 +7,7 @@ This is a GitOps repository of a simple Kargo example for getting started.
 * A Warehouse which monitors a container repository for new images
 * Three Stage (dev, staging, prod) deploy pipeline
 * Image tag promotion
+* PromotionTask with a conditional pull request
 * Direct Git commits to dev, staging
 * Pull request for promotion to prod
 
@@ -16,7 +17,7 @@ a path in a Git repository automatically (e.g. using auto-sync).
 
 ## Requirements
 
-* Kargo v1.2.x (for older Kargo versions, switch to the release-X.Y branch)
+* Kargo v1.3.x (for older Kargo versions, switch to the release-X.Y branch)
 * GitHub and a container registry (GHCR.io)
 * `git` and `docker` installed
 
