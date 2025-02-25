@@ -11,6 +11,8 @@ spec:
     value: main
   - name: image
     value: ghcr.io/akuity/guestbook
+  - name: openpr
+    value: "false"
   steps:
   # Clone the Git repository that contains the Kustomize configuration
   # to the ./src directory.
@@ -28,6 +30,7 @@ spec:
       path: ./src/env/${{ ctx.stage }}
       images:
       - image: ${{ vars.image }}
+        tag: ${{ imageFrom( vars.image ).Tag }}
   # Commit the changes to the Git repository.
   - uses: git-commit
     as: commit
@@ -36,58 +39,13 @@ spec:
       message: ${{ task.outputs['update-image'].commitMessage }}
   # Push the changes to the Git repository.
   - uses: git-push
+    if: ${{ vars.openpr != 'true' }}
     config:
       path: ./src
-  # If you have an Argo CD Application that should be synced after the Git
-  # repository is updated, uncomment the following lines and specify the
-  # app name.
-  # - uses: argocd-update
-  #   config:
-  #     apps:
-  #     - name: guestbook-${{ ctx.stage }}
-  #       sources:
-  #       - repoURL: ${{ vars.repoURL }}
 
----
-# Copy of promote task but with a pull request
-apiVersion: kargo.akuity.io/v1alpha1
-kind: PromotionTask
-metadata:
-  name: promote-with-pr
-  namespace: kargo-simple
-spec:
-  vars:
-  - name: repoURL
-    value: https://github.com/akuity/kargo-simple.git
-  - name: branch
-    value: main
-  - name: image
-    value: ghcr.io/akuity/guestbook
-  steps:
-  # Clone the Git repository that contains the Kustomize configuration
-  # to the ./src directory.
-  - uses: git-clone
-    config:
-      repoURL: ${{ vars.repoURL }}
-      checkout:
-      - branch: ${{ vars.branch }}
-        path: ./src
-  # Update the image in the Kustomize configuration located at ./env/<stage>
-  # in the repository.
-  - uses: kustomize-set-image
-    as: update-image
-    config:
-      path: ./src/env/${{ ctx.stage }}
-      images:
-      - image: ${{ vars.image }}
-  # Commit the changes to the Git repository.
-  - uses: git-commit
-    as: commit
-    config:
-      path: ./src
-      message: ${{ task.outputs['update-image'].commitMessage }}
   # Push the changes to a newly created branch in the Git repository.
   - uses: git-push
+    if: ${{ vars.openpr == 'true' }}
     as: push
     config:
       path: ./src
@@ -95,6 +53,7 @@ spec:
   # Open a pull request to merge the changes into the main branch.
   - uses: git-open-pr
     as: open-pr
+    if: ${{ vars.openpr == 'true' }}
     config:
       repoURL: ${{ vars.repoURL }}
       createTargetBranch: true
@@ -103,9 +62,11 @@ spec:
   # Wait for the pull request to be merged.
   - uses: git-wait-for-pr
     as: wait-for-pr
+    if: ${{ vars.openpr == 'true' }}
     config:
       repoURL: ${{ vars.repoURL }}
       prNumber: ${{ task.outputs['open-pr'].prNumber }}
+
   # If you have an Argo CD Application that should be synced after the Git
   # repository is updated, uncomment the following lines and specify the
   # app name.

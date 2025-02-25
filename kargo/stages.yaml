@@ -60,4 +60,7 @@ spec:
     spec:
       steps:
       - task:
-          name: promote-with-pr
+          name: promote
+        vars:
+        - name: openpr
+          value: "true"
