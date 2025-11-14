@@ -110,7 +110,7 @@ a path in a Git repository automatically (e.g. using auto-sync).
     To promote, click the truck icon in the `dev` Stage, click Promote, select
     the detected Freight, and confirm the promotion. Alternatively, you can drag the
     freight from the Warehouse to the `dev` Stage. Once promoted, 
-    the Freight  will be qualified to be promoted to downstream Stages (`staging`, `prod`).
+    the Freight will be qualified to be promoted to downstream Stages (`staging`, `prod`).
 
     ![promotion](docs/promotion.gif)
 
