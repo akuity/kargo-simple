@@ -39,7 +39,8 @@ a path in a Git repository automatically (e.g. using auto-sync).
 4. Create a guestbook container image repository in your GitHub account. 
 
    The easiest way to create a new ghcr.io image repository, is by retagging and 
-   pushing an existing image with your GitHub username:
+   pushing an existing image with your GitHub username. See [Authenticating to the GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-github-container-registry)
+   for instructions on how to log in to ghcr.io with Docker.
 
    ```shell
    docker login ghcr.io
@@ -50,7 +51,7 @@ a path in a Git repository automatically (e.g. using auto-sync).
    ```
 
    You will now have a `guestbook` container image repository. e.g.:
-   https://github.com/yourgithubusername/guestbook/pkgs/container/guestbook
+   https://github.com/users/yourgithubusername/packages/container/package/guestbook
 
 5. Change guestbook container image repository to public.
 
@@ -72,6 +73,9 @@ a path in a Git repository automatically (e.g. using auto-sync).
    ```shell
    kargo login --admin https://<kargo-url>
    ```
+   
+    You may need to use the `--insecure-skip-tls-verify` flag if your Kargo
+    instance is using a self-signed or untrusted TLS certificate.
 
 8. Apply the Kargo manifests:
 
@@ -92,7 +96,8 @@ a path in a Git repository automatically (e.g. using auto-sync).
 
    As part of the promotion process, Kargo requires privileges to commit changes
    to your Git repository, as well as the ability to create pull requests. Ensure
-   that the given token has these privileges.
+   that the given token has these privileges.  See [Managing your personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+   for further instructions on managing GitHub tokens.
 
 10. Promote the image!
 
@@ -102,9 +107,12 @@ a path in a Git repository automatically (e.g. using auto-sync).
 
     ![pipeline](docs/pipeline.png)
 
-    To promote, click the target icon to the left of the `dev` Stage, select
-    the detected Freight, and click `Yes` to promote. Once promoted, the Freight
-    will be qualified to be promoted to downstream Stages (`staging`, `prod`).
+    To promote, click the truck icon in the `dev` Stage, click Promote, select
+    the detected Freight, and confirm the promotion. Alternatively, you can drag the
+    freight from the Warehouse to the `dev` Stage. Once promoted, 
+    the Freight will be qualified to be promoted to downstream Stages (`staging`, `prod`).
+
+    ![promotion](docs/promotion.gif)
 
 
 ## Simulating a release
