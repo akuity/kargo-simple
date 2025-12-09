@@ -65,7 +65,7 @@ spec:
     if: ${{ vars.openpr == 'true' }}
     config:
       repoURL: ${{ vars.repoURL }}
-      prNumber: ${{ task.outputs['open-pr'].prNumber }}
+      prNumber: ${{ task.outputs['open-pr'].pr.id }}
 
   # If you have an Argo CD Application that should be synced after the Git
   # repository is updated, uncomment the following lines and specify the
