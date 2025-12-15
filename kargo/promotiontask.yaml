@@ -6,11 +6,11 @@ metadata:
 spec:
   vars:
   - name: repoURL
-    value: https://github.com/akuity/kargo-simple.git
+    value: https://github.com/easwar17/kargo-simple.git
   - name: branch
     value: main
   - name: image
-    value: ghcr.io/akuity/guestbook
+    value: ghcr.io/easwar17/guestbook
   - name: openpr
     value: "false"
   steps:
