@@ -5,4 +5,4 @@ resources:
 namespace: guestbook-simple-dev
 images:
 - name: ghcr.io/psu-admin-sandbox/guestbook
-  newTag: v0.0.1
+  newTag: v0.0.2
