@@ -6,5 +6,5 @@ metadata:
 spec:
   subscriptions:
   - image:
-      repoURL: ghcr.io/kuwaharg/guestbook
+      repoURL: ghcr.io/psu-admin-sandbox/guestbook
       imageSelectionStrategy: SemVer

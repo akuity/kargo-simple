@@ -14,7 +14,7 @@ spec:
         app: guestbook-simple
     spec:
       containers:
-      - image: ghcr.io/kuwaharg/guestbook:latest
+      - image: ghcr.io/psu-admin-sandbox/guestbook:latest
         name: guestbook-simple
         ports:
         - name: http
